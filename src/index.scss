@@ -1,3 +1,5 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
 html,body {
     margin: 0;
 }
@@ -27,7 +29,8 @@ input{
   padding-left: 3%;
   
   &:focus{
-    border : 1px solid #1890ff;
+    border : 1px solid #40a9ff;
+    box-shadow: 0 0 0 2px rgba(24,144,25,0.2);
     outline-offset: 0px !important;
     outline: none !important;
   }
@@ -40,11 +43,29 @@ input{
   width: 50%;
   margin: auto;
 }
-.ButtonAddComponent{
+.ButtonAddContainer{
   display: flex;
   justify-content: flex-end;
   // & :nth-child(){
   //   cursor: pointer;
 
   // }
+}
+.ButtonComponent{
+  width: 40%;
+  min-width: 125px;
+  background-color: #40a9ff;
+  text-align: center;
+  margin: auto;
+  border-radius: 5px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.RandomContainer{
+  border: 2px solid red !important;
 }
