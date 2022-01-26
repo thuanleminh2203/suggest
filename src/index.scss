@@ -1,0 +1,50 @@
+html,body {
+    margin: 0;
+}
+
+p, span , h1, h2,h3,h4,h5, input {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+
+}
+
+.AppContainer{
+  background: pink;
+  height: 100vh;
+}
+
+input{
+  width: 100%;
+  color: rgba(0,0,0,.65);
+  font-size: 14px;
+  line-height: 1.5715;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  padding-left: 3%;
+  
+  &:focus{
+    border : 1px solid #1890ff;
+    outline-offset: 0px !important;
+    outline: none !important;
+  }
+  &::placeholder{
+    opacity: 0.6;
+  }
+}
+
+.OptionContainer{
+  width: 50%;
+  margin: auto;
+}
+.ButtonAddComponent{
+  display: flex;
+  justify-content: flex-end;
+  // & :nth-child(){
+  //   cursor: pointer;
+
+  // }
+}
