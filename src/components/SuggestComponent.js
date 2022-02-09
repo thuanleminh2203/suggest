@@ -22,7 +22,7 @@ function SuggestComponent(props) {
       <input
         onChange={(e) => onChange(e)}
         type="text"
-        placeholder="Nhập đề xuất gợi ý"
+        // placeholder="Nhập đề xuất gợi ý"
         name={name}
         value={value}
         autoComplete="off"
@@ -32,10 +32,9 @@ function SuggestComponent(props) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          marginLeft: '3px',
         }}
       >
-        {isShowBtnDelete && (
+        {/* {isShowBtnDelete && (
           <img
             src={iconDelete}
             name={name}
@@ -44,7 +43,7 @@ function SuggestComponent(props) {
               height: '16px',
             }}
           />
-        )}
+        )} */}
       </div>
     </div>
   )

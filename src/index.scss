@@ -11,23 +11,27 @@ p, span , h1, h2,h3,h4,h5, input {
 }
 
 .AppContainer{
-  background: pink;
+  // background: pink;
   height: 100vh;
 }
 
 input{
   width: 100%;
-  color: rgba(0,0,0,.65);
-  font-size: 14px;
-  line-height: 1.5715;
+  color: #6F3326;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: Averta Std CY;
+  line-height: 20px;
   background-color: #fff;
   background-image: none;
-  border: 1px solid #d9d9d9;
-  border-radius: 5px;
+  border: 1px solid #FFA70C;
+  box-sizing: border-box;
+  border-radius: 13px;
   -webkit-transition: all .3s;
   transition: all .3s;
-  padding-left: 3%;
-  
+  // padding-left: 3%;
+  text-align: center;
+  height: 54px;
   &:focus{
     border : 1px solid #40a9ff;
     box-shadow: 0 0 0 2px rgba(24,144,25,0.2);
@@ -40,16 +44,20 @@ input{
 }
 
 .OptionContainer{
-  width: 50%;
+  width: 90%;
   margin: auto;
+  height: 256px;
+  overflow-y: scroll;
 }
 .ButtonAddContainer{
-  display: flex;
-  justify-content: flex-end;
-  // & :nth-child(){
-  //   cursor: pointer;
+  text-align: center;
+  background: #FFFFFF;
+  border: 1px solid #FFA70C;
+  box-sizing: border-box;
+  border-radius: 13px;
+  height: 54px;
+  position: relative;
 
-  // }
 }
 .ButtonComponent{
   width: 40%;
@@ -69,3 +77,88 @@ input{
 .RandomContainer{
   border: 2px solid red !important;
 }
+.HomeContainer{
+  display: flex;
+  flex-direction: column;
+  // height: 100%;
+  text-align: center;
+  justify-content: end;
+  padding-top: 12%;
+  .Title{
+    font-family: Averta Std CY;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 31px;
+    color: #6F3326;
+    margin-top: 5px;
+  }
+  .Decription{
+    font-family: Averta Std CY;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: #6F3326;
+  }
+}
+.ButtonContainer{
+  text-align: center;
+  font-family: Averta Std CY;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  color: #FFFFFF;
+  background-color: #FFA70C;
+  border-radius: 13px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: auto;
+}
+.ButtonDisableContainer{
+  background-color: #ADADAD !important;
+}
+.ButtonAddDisableContainer{
+  border: 1px solid #E9E9E9;
+}
+
+.ProgressContainer{
+  margin-top: 32px;
+  position: relative;
+  height: 5px;
+  text-align: center;
+  width: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  .ColorContainer{
+    position: absolute;
+    background-color: #ffffff;
+    width: 0px;
+    height: 5px;
+    border-radius: 20px;
+    animation: progres 2s infinite linear;    
+  }
+}
+@keyframes progres{
+  0%{
+    width: 0%;
+  }
+  25%{
+      width: 50%;
+  }
+  50%{
+      width: 75%;
+  }
+  75%{
+      width: 85%;
+  }
+  100%{
+      width: 100%;
+  }
+};
