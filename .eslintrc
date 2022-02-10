@@ -15,10 +15,9 @@
       "plugin:react/recommended",
       "plugin:prettier/recommended"
     ],
-  //   "editor.codeActionsOnSave": {
-  //     "source.fixAll": true
-  // },
-  
+    // "editor.codeActionsOnSave": {
+    //   "source.fixAll": true
+    // },
     "rules": {
       "prettier/prettier": ["error"],
       "semi": ["error", "never"],

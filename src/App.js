@@ -28,6 +28,7 @@ const styles = {
 let inteval = null
 let timeout = null
 function App() {
+  const heightDevice = window.innerHeight - 370
   const [options, setOptions] = useState(['', '', ''])
   const [flag, setFlag] = useState(true)
   const [select, setSelect] = useState(0)
@@ -103,6 +104,10 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    console.log(window.innerHeight)
+  }, [])
+
   return (
     <div>
       {confetti && <Confetti numberOfPieces={100} />}
@@ -122,7 +127,10 @@ function App() {
             <ProgressBarComponent />
           ) : (
             <>
-              <div className="OptionContainer" style={{ height: step >= 3 && '0px' }}>
+              <div
+                className="OptionContainer"
+                style={{ height: step >= 3 && '0px', maxHeight: `${heightDevice}px` }}
+              >
                 {step === 2 && (
                   <>
                     {options.map((item, index) => (
@@ -136,36 +144,38 @@ function App() {
                       />
                     ))}
 
-                    {options.length < 10 && (
-                      <div style={{ marginTop: '10px' }}>
-                        <div
-                          className={`ButtonAddContainer ${options.filter((value) => value !== '')
-                            .length < 3 && 'ButtonAddDisableContainer'} `}
-                          onClick={
-                            options.filter((value) => value !== '').length < 3
-                              ? () => {}
-                              : () => addOption()
+                    {/* {options.length < 10 && ( */}
+                    <div style={{ marginTop: '10px' }}>
+                      <div
+                        className={`ButtonAddContainer ${options.filter((value) => value !== '')
+                          .length < 3 && 'ButtonAddDisableContainer'} `}
+                        onClick={
+                          options.filter((value) => value !== '').length < 3 ||
+                          options.length === 10
+                            ? () => {}
+                            : () => addOption()
+                        }
+                      >
+                        <img
+                          src={
+                            options.filter((value) => value !== '').length < 3 ||
+                            options.length === 10
+                              ? iconPlusDisable
+                              : iconPlusActive
                           }
-                        >
-                          <img
-                            src={
-                              options.filter((value) => value !== '').length < 3
-                                ? iconPlusDisable
-                                : iconPlusActive
-                            }
-                            style={{
-                              position: 'absolute',
-                              margin: 'auto',
-                              top: '0',
-                              left: '0',
-                              right: '0',
-                              bottom: '0',
-                              height: '18px',
-                            }}
-                          />
-                        </div>
+                          style={{
+                            position: 'absolute',
+                            margin: 'auto',
+                            top: '0',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            height: '18px',
+                          }}
+                        />
                       </div>
-                    )}
+                    </div>
+                    {/* )} */}
                   </>
                 )}
               </div>
@@ -173,7 +183,7 @@ function App() {
               <div
                 style={{
                   position: 'absolute',
-                  bottom: '5%',
+                  bottom: '30px',
                   width: '100%',
                   backgroundColor: step == 3 && '#AD0000',
                 }}
