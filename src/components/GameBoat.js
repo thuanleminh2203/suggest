@@ -17,7 +17,7 @@ const X = 'x'
 const O = 'o'
 const _ = null
 const BATTLE_SHIPS = [battleShip1, battleShip2, battleShip3, battleShip4, battleShip5]
-const NUMBER_ROW_BOARD = 6
+const NUMBER_ROW_BOARD = 10
 const NUMBER_BOAT = 10
 
 const createBoardGame = () => {
@@ -25,16 +25,24 @@ const createBoardGame = () => {
   for (let rowIndex = 0; rowIndex < NUMBER_ROW_BOARD; rowIndex++) {
     const row = []
     for (let columnIndex = 0; columnIndex < NUMBER_ROW_BOARD; columnIndex++) {
-      row.push({
-        row: rowIndex,
-        colum: columnIndex,
+      // row.push({
+      //   row: rowIndex,
+      //   colum: columnIndex,
+      //   value: _,
+      //   // img: battleships[Math.floor(Math.random() * 5)],
+      //   img: null,
+      // })
+      data.push({
+        id: '' + rowIndex + columnIndex,
+        x: rowIndex,
+        y: columnIndex,
         value: _,
         // img: battleships[Math.floor(Math.random() * 5)],
         img: null,
       })
     }
-    row.id = rowIndex
-    data.push(row)
+    // row.id = rowIndex
+    // data.push(row)
   }
   console.log('data', data)
   return data
@@ -113,12 +121,13 @@ function GameBoat() {
   //   const coordinatesBoat = randomCoordinatesBoat(10)
 
   const onClickCell = (rowIndex, columnIndex) => {
-    const currentDataCell = dataBoard[rowIndex][columnIndex].value
+    const index = parseInt(rowIndex)*NUMBER_ROW_BOARD + parseInt(columnIndex)
+    const currentDataCell = dataBoard[index].value
     const coordinate = '' + rowIndex + columnIndex
     if (!currentDataCell) {
       const newData = [...dataBoard]
-      newData[rowIndex][columnIndex].value = coordinatesBoat.includes(coordinate) ? O : X
-      newData[rowIndex][columnIndex].img = coordinatesBoat.includes(coordinate)
+      newData[index].value = coordinatesBoat.includes(coordinate) ? O : X
+      newData[index].img = coordinatesBoat.includes(coordinate)
         ? BATTLE_SHIPS[Math.floor(Math.random() * BATTLE_SHIPS.length) - 1]
         : null
 
@@ -131,70 +140,53 @@ function GameBoat() {
     setCoordinatesBoat(randomCoordinatesBoat(NUMBER_BOAT))
   }, [])
 
-  
+  const onDrag = (e , data) => {
+    console.log('Event Type', e.target.outerText)
+    // console.log(e, data)
+  }
 
   return (
     <>
-      <div className="box" style={{ height: '500px', width: '1000px', overflow: 'auto', padding: '0' }}>
-        {/* <div style={{ height: '1000px', width: '1000px', padding: '10px' }}> */}
-        <Draggable bounds="parent">
-          <div className="box" style={{ width : '100px', border: '1px solid red' }}>
-                I can only be moved within my offsetParent.<br /><br />
-                Both parent padding and child margin work properly.
-          </div>
-        </Draggable>
-        <Draggable bounds="parent">
-          <div className="box" style={{ width : '100px', border: '1px solid red' }}>
-                I also can only be moved within my offsetParent.<br /><br />
-                Both parent padding and child margin work properly.
-          </div>
-        </Draggable>
-        {/* </div> */}
-      </div>
       <div
         style={{
-          width: '100%',
           height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          display: 'grid',
+          placeContent:'center',         
         }}
       >
-        <div style={{ border:'1px solid red', position:'relative', width:'266px', height:'266px' }}>
-          {dataBoard.map((rows) => (
-            // <Draggable bounds="parent"  key={rows.id}>
-            //   <div style={{ width:'55px' }}>
-            //   abc
-            //   </div>
+        <div style={{ border:'1px solid red',display:'flex',flexFlow:'wrap',
+          position:'relative',width:`${widthCell*NUMBER_ROW_BOARD + 2}px`,
+          height:`${widthCell*NUMBER_ROW_BOARD + 2}px`,
+          // backgroundImage: 'url("../images/sea-background.png")'
+        }}
+        className="demo-test"
+        >
+          {dataBoard.map((cell) => (
+            // <Draggable key={cell.id} bounds="parent" grid={[widthCell,widthCell]} onStart={onDrag}>
+            <div
+              key={cell.id}
+              style={{
+                width: `${widthCell}px`,
+                height: `${widthCell}px`,
+                backgroundColor: 'skyblue',
+                border: '1px solid #ffffff',
+                display: 'grid',
+                placeContent: 'center',
+                position:'relative',
+                zIndex: '1'
+              }}
+              onClick={() => onClickCell(cell.x, cell.y)}
+            >
+              <div style={{ width: '100%',height:'100%' }}>
+                {cell.id}
+              </div>
+            </div> 
             // </Draggable>
-            <div key={rows.id} style={{ display: 'flex' , border:'1px solid black' }}>
-              {rows.map((columnData) => (
-                <div
-                  style={{
-                    width: `${widthCell}px`,
-                    height: `${widthCell}px`,
-                    backgroundColor: 'skyblue',
-                    border: '1px solid #ffffff',
-                    justifyContent: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    textAlign: 'center',
-                    backgroundImage: '../images/sea-background.png',
-                  }}
-                  key={columnData.colum}
-                  onClick={() => onClickCell(columnData.row, columnData.colum)}
-                >
-                  <Draggable bounds="parent"  key={columnData.colum}>
-                    <div>
-                  abc
-                    </div>
-                  </Draggable>
-                </div> 
-              ))}
-            </div>
           ))}
         </div>
+      </div>
+      <div style={{ backgroundColor:'pink' }}>
+a
       </div>
     </>
   )
