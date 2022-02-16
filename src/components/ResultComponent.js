@@ -21,7 +21,10 @@ export default function ResultComponent(props) {
           Xin chúc mừng
         </div>
         <div className="Decription" style={{ color: '#FFFFFF' }}>
-          Món ăn may mắn ngày hôm nay là {value}
+          Đáp án được lựa chọn là
+        </div>
+        <div className="Decription" style={{ color: '#FFFFFF' }}>
+          {`"${value}"`}
         </div>
       </div>
     </>

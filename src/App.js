@@ -17,6 +17,8 @@ import iconPlusActive from './images/plus-active-icon.png'
 import iconPlusDisable from './images/plus-disable-icon.png'
 import ProgressBarComponent from './components/ProgressBarComponent'
 import ResultComponent from './components/ResultComponent'
+import Game from './components/Game'
+import GameBoat from './components/GameBoat'
 
 const styles = {
   fadeIn: {
@@ -109,108 +111,112 @@ function App() {
   }, [])
 
   return (
-    <div>
-      {confetti && <Confetti numberOfPieces={100} />}
+    <GameBoat />
 
-      <div className="AppContainer">
-        <div style={{ height: '100%' }}>
-          {!loading && step < 3 && (
-            <div className="HomeContainer">
-              <div>
-                <img src={iconHome} style={{ width: '243px', height: '179px' }} />
-              </div>
-              <div className="Title">Hôm nay ăn gì?</div>
-              <div className="Decription">Không ngại đi xa, chỉ cần lý do</div>
-            </div>
-          )}
-          {loading ? (
-            <ProgressBarComponent />
-          ) : (
-            <>
-              <div
-                className="OptionContainer"
-                style={{ height: step >= 3 && '0px', maxHeight: `${heightDevice}px` }}
-              >
-                {step === 2 && (
-                  <>
-                    {options.map((item, index) => (
-                      <SuggestConponent
-                        name={index}
-                        key={index}
-                        value={item}
-                        onDeleteData={onDelete}
-                        onChangeData={onChangeData}
-                        isShowBtnDelete={options.length !== 1}
-                      />
-                    ))}
+    // <div>
+    //   {/* <Game /> */}
+    //   {confetti && <Confetti numberOfPieces={200} />}
+    //   <GameBoat />
+    //   <div className="AppContainer">
+    //     <div style={{ height: '100%' }}>
+    //       {!loading && step < 3 && (
+    //         <div className="HomeContainer">
+    //           <div>
+    //             <img src={iconHome} style={{ width: '243px', height: '179px' }} />
+    //           </div>
+    //           <div className="Title">Random Question</div>
+    //           <div className="Decription">đưa ra giải pháp</div>
+    //           <div className="Decription">một cách nhanh chóng</div>
+    //         </div>
+    //       )}
+    //       {loading ? (
+    //         <ProgressBarComponent />
+    //       ) : (
+    //         <>
+    //           <div
+    //             className="OptionContainer"
+    //             style={{ height: step >= 3 && '0px', maxHeight: `${heightDevice}px` }}
+    //           >
+    //             {step === 2 && (
+    //               <>
+    //                 {options.map((item, index) => (
+    //                   <SuggestConponent
+    //                     name={index}
+    //                     key={index}
+    //                     value={item}
+    //                     onDeleteData={onDelete}
+    //                     onChangeData={onChangeData}
+    //                     isShowBtnDelete={options.length !== 1}
+    //                   />
+    //                 ))}
 
-                    {/* {options.length < 10 && ( */}
-                    <div style={{ marginTop: '10px' }}>
-                      <div
-                        className={`ButtonAddContainer ${options.filter((value) => value !== '')
-                          .length < 3 && 'ButtonAddDisableContainer'} `}
-                        onClick={
-                          options.filter((value) => value !== '').length < 3 ||
-                          options.length === 10
-                            ? () => {}
-                            : () => addOption()
-                        }
-                      >
-                        <img
-                          src={
-                            options.filter((value) => value !== '').length < 3 ||
-                            options.length === 10
-                              ? iconPlusDisable
-                              : iconPlusActive
-                          }
-                          style={{
-                            position: 'absolute',
-                            margin: 'auto',
-                            top: '0',
-                            left: '0',
-                            right: '0',
-                            bottom: '0',
-                            height: '18px',
-                          }}
-                        />
-                      </div>
-                    </div>
-                    {/* )} */}
-                  </>
-                )}
-              </div>
-              {step === 3 && <ResultComponent value={options[position]} />}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '30px',
-                  width: '100%',
-                  backgroundColor: step == 3 && '#AD0000',
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: step == 3 && '#AD0000',
-                    border: '1px solid #FFFFFF',
-                  }}
-                  className={`ButtonContainer ${options.filter((value) => value !== '').length <
-                    3 &&
-                    step === 2 &&
-                    'ButtonDisableContainer'} ${step === 3} `}
-                  onClick={() => onChangeStep()}
-                >
-                  {step === 1
-                    ? 'Bắt đầu ngay'
-                    : step === 2
-                    ? 'Chọn món hôm nay'
-                    : 'Quay lại chọn món'}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+    //                 {/* {options.length < 10 && ( */}
+    //                 <div style={{ marginTop: '10px' }}>
+    //                   <div
+    //                     className={`ButtonAddContainer ${options.filter((value) => value !== '')
+    //                       .length < 3 && 'ButtonAddDisableContainer'} `}
+    //                     onClick={
+    //                       options.filter((value) => value !== '').length < 3 ||
+    //                       options.length === 10
+    //                         ? () => {}
+    //                         : () => addOption()
+    //                     }
+    //                   >
+    //                     <img
+    //                       src={
+    //                         options.filter((value) => value !== '').length < 3 ||
+    //                         options.length === 10
+    //                           ? iconPlusDisable
+    //                           : iconPlusActive
+    //                       }
+    //                       style={{
+    //                         position: 'absolute',
+    //                         margin: 'auto',
+    //                         top: '0',
+    //                         left: '0',
+    //                         right: '0',
+    //                         bottom: '0',
+    //                         height: '18px',
+    //                       }}
+    //                     />
+    //                   </div>
+    //                 </div>
+    //                 {/* )} */}
+    //               </>
+    //             )}
+    //           </div>
+    //           {step === 3 && <ResultComponent value={options[position]} />}
+    //           <div
+    //             style={{
+    //               position: 'absolute',
+    //               bottom: '30px',
+    //               width: '100%',
+    //               backgroundColor: step == 3 && '#AD0000',
+    //             }}
+    //           >
+    //             <div
+    //               style={{
+    //                 backgroundColor: step == 3 && '#AD0000',
+    //                 border: '1px solid #FFFFFF',
+    //               }}
+    //               className={`ButtonContainer ${options.filter((value) => value !== '').length <
+    //                 3 &&
+    //                 step === 2 &&
+    //                 'ButtonDisableContainer'} ${step === 3} `}
+    //               onClick={() => onChangeStep()}
+    //             >
+    //               {step === 1
+    //                 ? 'Bắt đầu ngay'
+    //                 : step === 2
+    //                 ? 'Random Question'
+    //                 : 'Quay lại lựa chọn'}
+    //             </div>
+    //           </div>
+    //         </>
+    //       )}
+    //     </div>
+    //   </div>
+    // </div>
   )
 }
 

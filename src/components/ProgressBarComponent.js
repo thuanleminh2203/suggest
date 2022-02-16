@@ -1,5 +1,5 @@
 import React from 'react'
-import iconFood from '../images/food-icon.png'
+import iconHome from '../images/home-icon.png'
 
 export default function ProgressBarComponent() {
   return (
@@ -14,13 +14,16 @@ export default function ProgressBarComponent() {
         }}
       >
         <div>
-          <img src={iconFood} style={{ width: '179px', height: '164px' }} />
+          <img src={iconHome} style={{ width: '179px', height: '164px' }} />
         </div>
         <div className="Title" style={{ color: '#FFFFFF' }}>
-          Hôm nay ăn gì?
+          Random Question
         </div>
         <div className="Decription" style={{ color: '#FFFFFF' }}>
-          Không ngại đi xa, chỉ cần lý do
+          đưa ra giải pháp
+        </div>
+        <div className="Decription" style={{ color: '#FFFFFF' }}>
+          một cách nhanh chóng
         </div>
         <div className="ProgressContainer">
           <div className="ColorContainer"></div>
