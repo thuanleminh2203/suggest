@@ -30,12 +30,12 @@ const SHIPS= [
     id: 1,
     name:'ship1',
     img: null,
-    distance: 1
+    distance: 5
   },{
     id: 2,
     name:'ship2',
     img: null,
-    distance: 2
+    distance: 4
   },{
     id: 3,
     name:'ship3',
@@ -45,12 +45,12 @@ const SHIPS= [
     id: 4,
     name:'ship4',
     img: null,
-    distance: 4
+    distance: 2
   },{
     id: 5,
     name:'ship5',
     img: null,
-    distance: 5
+    distance: 1
   }
 ]
 
@@ -67,9 +67,9 @@ const createBoardGame = () => {
       //   img: null,
       // })
       data.push({
-        id: '' + rowIndex + columnIndex,
-        x: rowIndex,
-        y: columnIndex,
+        id: ''  + columnIndex + '-'+ rowIndex,
+        x: columnIndex,
+        y: rowIndex,
         value: _,
         // img: battleships[Math.floor(Math.random() * 5)],
         img: null,
@@ -78,7 +78,7 @@ const createBoardGame = () => {
     // row.id = rowIndex
     // data.push(row)
   }
-  console.log('data', data)
+  // console.log('data', data)
   return data
 }
 
@@ -150,60 +150,86 @@ const randomColor = () => {
   return '#' + randomNumber(16777215).toString(16)
 }
 
-const genarateCoordinateShip = (curentPositionX,curentPositionY,distance) =>{
-  console.log('====x====y==',curentPositionX,curentPositionY)
+const genarateCoordinateShip = (distance) =>{
+  // const curentPositionX = 5
+  // const curentPositionY = 5
+  const curentPositionX = randomNumber(NUMBER_ROW_BOARD)
+  const curentPositionY = randomNumber(NUMBER_ROW_BOARD)
+  // console.log('====x====y==',curentPositionX,curentPositionY)
+  //coor = x + 10*y
+  const valueBaseCoordinate = curentPositionX + curentPositionY * 10
   // const position = {}
-  const x = Math.floor(curentPositionX / NUMBER_ROW_BOARD) //x
-  const y = curentPositionY % NUMBER_ROW_BOARD // y
-  const slideX = x === 0|| x === NUMBER_ROW_BOARD -1
-  const slideY = y ===0 || y === NUMBER_ROW_BOARD -1 
+  // const x = Math.floor(curentPositionX / NUMBER_ROW_BOARD) //x
+  // const y = curentPositionY % NUMBER_ROW_BOARD // y
+  const slideX = curentPositionX === 0|| curentPositionX === NUMBER_ROW_BOARD -1
+  const slideY = curentPositionY ===0 || curentPositionY === NUMBER_ROW_BOARD -1 
 
-  const coordinateForShip = []
-  if(slideX){
-    if(x === 0){
-      for(let i = 0; i< distance ; i++){
-        coordinateForShip.push(curentPositionX  + NUMBER_ROW_BOARD * i)
-      }
-    }
-    if(x === NUMBER_ROW_BOARD - 1){
-      for(let i = 0; i< distance ; i++){
-        coordinateForShip.push(curentPositionX  - NUMBER_ROW_BOARD * i)
-      }
-    }
-    // return
-  }
-  if(slideY){
-    if(y === 0){
-      for(let i = 0; i< distance ; i++){
-        coordinateForShip.push(curentPositionY  + i)
-      }
-    }
-    if(y === NUMBER_ROW_BOARD - 1){
-      for(let i = 0; i< distance ; i++){
-        coordinateForShip.push(curentPositionY  - i)
-      }
-    }
-  }
+  let coordinateForShip = []
+  // if(slideX){
+  //   if(curentPositionX === 0){
+  //     for(let i = 0; i< distance ; i++){
+  //       coordinateForShip.push(curentPositionX  + NUMBER_ROW_BOARD * i)
+  //     }
+  //   }
+  //   if(curentPositionX === NUMBER_ROW_BOARD - 1){
+  //     for(let i = 0; i< distance ; i++){
+  //       coordinateForShip.push(curentPositionX  - NUMBER_ROW_BOARD * i)
+  //     }
+  //   }
+  //   // return
+  // }
+  // if(slideY){
+  //   if(curentPositionY === 0){
+  //     for(let i = 0; i< distance ; i++){
+  //       coordinateForShip.push(curentPositionY  + i)
+  //     }
+  //   }
+  //   if(curentPositionY === NUMBER_ROW_BOARD - 1){
+  //     for(let i = 0; i< distance ; i++){
+  //       coordinateForShip.push(curentPositionY  - i)
+  //     }
+  //   }
+  // }
 
   const randomDirection = randomNumber(2) // x: 0, y: 1
 
-  const currentDistance  = new Date().getMilliseconds() % 2 === 0 ?( distance -1) : -(distance -1 )
+  const currentDistance  = new Date().getMilliseconds() % 2 === 0 ? distance  : -distance 
 
   let width =  widthCell
   let height = widthCell
+  // console.log('===valueBaseCoordinate===',valueBaseCoordinate)
+
   if(randomDirection === 0){
-    const check = (curentPositionX + currentDistance) / NUMBER_ROW_BOARD === x
+    // console.log('===tang=XXXXXX===',currentDistance/distance)
+    // console.log('===checkkkk===',(curentPositionX + currentDistance))
+
+    // const check = (valueBaseCoordinate + currentDistance) / NUMBER_ROW_BOARD === curentPositionY
+    const check = (curentPositionX + currentDistance) < NUMBER_ROW_BOARD && (curentPositionX + currentDistance) >= 0
+    let preCoordinateX = 0
     for(let i = 0; i< distance; i++ ){
-      coordinateForShip.push(check  ?( currentDistance > 0 ? curentPositionX + i : curentPositionX - i) : ( currentDistance > 0 ? curentPositionX - i : curentPositionX + i))
+      const newPositionX = check? curentPositionX + i*(currentDistance/distance) : curentPositionX - i*(currentDistance/distance)
+
+      coordinateForShip =  preCoordinateX < newPositionX
+        ? [...coordinateForShip, ''+ newPositionX + curentPositionY]
+        : [''+ newPositionX + curentPositionY, ...coordinateForShip]
+
+      preCoordinateX = newPositionX
     }
     width = coordinateForShip.length * width
 
   }else{
-    const check = (curentPositionY + currentDistance * NUMBER_ROW_BOARD) % NUMBER_ROW_BOARD === y
+    // console.log('===tang=YYYYYYY===',currentDistance/distance)
+    // console.log('===checkkkk===',(curentPositionY + currentDistance))
+    let preCoordinateY = 0
+
+    const check = (curentPositionY + currentDistance) < NUMBER_ROW_BOARD && (curentPositionY + currentDistance) >=0
     for(let i = 0; i< distance; i++ ){
-      coordinateForShip.push(check  ?
-        ( currentDistance > 0 ? curentPositionY + i * NUMBER_ROW_BOARD : curentPositionY - i * NUMBER_ROW_BOARD) 
-        : ( currentDistance > 0 ? curentPositionY - i* NUMBER_ROW_BOARD : curentPositionY + i * NUMBER_ROW_BOARD))
+      const newPositionY = check? curentPositionY + i*(currentDistance/distance) : curentPositionY - i*(currentDistance/distance)
+
+      coordinateForShip = preCoordinateY < newPositionY
+        ? [...coordinateForShip, ''+ curentPositionX + newPositionY] 
+        : [''+ curentPositionX + newPositionY,...coordinateForShip]
+      preCoordinateY = newPositionY
     }
     height = coordinateForShip.length * height
 
@@ -211,7 +237,7 @@ const genarateCoordinateShip = (curentPositionX,curentPositionY,distance) =>{
 
 
 
-  console.log('===coordinateForShip===', coordinateForShip, width , height)
+  // console.log('===coordinateForShip===', coordinateForShip, width , height)
   return { coordinateForShip, width , height  }
 
 }
@@ -220,27 +246,34 @@ const randomNumber= (maxValue = 0) => Math.floor(Math.random()*maxValue)
 
 function GameBattleShip() {
   const [dataBoard, setDataBoard] = useState([])
-  const [coordinatesShip, setCoordinatesShip] = useState([])
+  const [coordinatesShip, setCoordinatesShip] = useState()
+  const [coordinatesUsed,setCoordinatesUsed] = useState([])
   //   const coordinatesShip = randomCoordinatesShip(10)
 
   const onClickCell = (rowIndex, columnIndex) => {
-    const index = parseInt(rowIndex)*NUMBER_ROW_BOARD + parseInt(columnIndex)
-    const currentDataCell = dataBoard[index].value
-    const coordinate = '' + rowIndex + columnIndex
-    if (!currentDataCell) {
-      const newData = [...dataBoard]
-      newData[index].value = coordinatesShip.includes(coordinate) ? O : X
-      newData[index].img = coordinatesShip.includes(coordinate)
-        ? BATTLE_SHIPS[Math.floor(Math.random() * BATTLE_SHIPS.length) - 1]
-        : null
+    // const index = parseInt(rowIndex)*NUMBER_ROW_BOARD + parseInt(columnIndex)
+    // const currentDataCell = dataBoard[index].value
+    // const coordinate = '' + rowIndex + columnIndex
+    // if (!currentDataCell) {
+    //   const newData = [...dataBoard]
+    //   newData[index].value = coordinatesShip.includes(coordinate) ? O : X
+    //   newData[index].img = coordinatesShip.includes(coordinate)
+    //     ? BATTLE_SHIPS[Math.floor(Math.random() * BATTLE_SHIPS.length) - 1]
+    //     : null
 
-      setDataBoard(newData)
-    }
+    //   setDataBoard(newData)
+    // }
   }
 
   useEffect(() => {
     setDataBoard(createBoardGame())
-    setCoordinatesShip(randomCoordinatesShip(NUMBER_SHIP))
+    // setCoordinatesShip(randomCoordinatesShip(NUMBER_SHIP))
+    // for(let i =0; i<SHIPS.length;i++){
+    //   genarateShip(ship)
+    //   console.log('===thuannnnnnnnnn===')
+    // }
+    setCoordinatesShip(genarateShip())
+
   }, [])
 
   const onDrag = (e , data) => {
@@ -248,23 +281,58 @@ function GameBattleShip() {
     console.log( data)
   }
 
+  const genarateShip = (ship = {}, test1 = []) =>{
+    let coordinates = []
+    let data = []
+    for(let i =0; i < SHIPS.length; i++){
+      const { distance, id } = SHIPS[i]
+      const dataForShip = genarateCoordinateShip(distance)
 
-  // }
+      const { width, height, coordinateForShip } = dataForShip
 
+      const set = new Set([...coordinates, ...coordinateForShip])
+      // const test2 = [...test, ...coordinateForShip]
+      // console.log('====set===',set)
+      // console.log('====test===',[...coordinates, ...coordinateForShip])
 
-  const genarateShip = (ship = {}) =>{
-    const { distance } = ship
-    const randomPositionX = randomNumber(NUMBER_ROW_BOARD)
-    const randomPositionY = randomNumber(NUMBER_ROW_BOARD)
-    const dataForShip = genarateCoordinateShip(randomPositionX,randomPositionY,distance)
-    const { width, height, coordinateForShip } = dataForShip
-    // if(randomPosition === 0)
-    // if(randomPosition === NUMBER_ROW_BOARD -1)
+      if(set.size !== [...coordinates, ...coordinateForShip].length){
+        console.log('====de quy------')
+        i--   
+      }else{
+        const coordinate = coordinateForShip[0].split('')
+        const x = parseInt(coordinate[0])
+        const y = parseInt(coordinate[1])
+        coordinates = [...coordinates, ...coordinateForShip]
+        data = [...data, { id, width, height, x, y }]
+      }
+
+    }
+
     return(
-      <Draggable bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} defaultPosition={{ x: randomPositionX* widthCell, y: randomPositionY*widthCell }}>
+      <>
+      
+        {data.map((item) => 
+          (
+            <Draggable key={item.id} bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} defaultPosition={{ x: item.x* widthCell, y: item.y*widthCell }}>
+              <div style={{ backgroundColor:`${randomColor()}`,position:'absolute',zIndex:'3',width: `${item.width}px`,
+                height: `${item.height}px`, color:`${randomColor()}` }}>
+            test {item.id}
+              </div>
+            </Draggable>)
+        )
+        }
+          
+      </>
+    )
+  }
+
+  const drawShip = (ship = {}) => {
+    const { x, y, id } = ship
+    return(
+      <Draggable key={id} bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} defaultPosition={{ x: x* widthCell, y: y*widthCell }}>
         <div style={{ backgroundColor:`${randomColor()}`,position:'absolute',zIndex:'3',width: `${width}px`,
-          height: `${height}px`, }}>
-            test1
+          height: `${height}px`, color:`${randomColor()}` }}>
+            test {id}
         </div>
       </Draggable>
     )
@@ -289,50 +357,30 @@ function GameBattleShip() {
         >
           {/* {SHIPS.map(ship => <Fragment key={ship}> */}
 
-          {genarateShip(SHIPS[4])}
+          {coordinatesShip}
           {/* </Fragment>)} */}
-          {/* <Draggable bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} defaultPosition={{ x: widthCell, y: widthCell }}>
-            <div style={{ backgroundColor:'red',position:'absolute',zIndex:'3',width: `${widthCell}px`,
-              height: `${2*widthCell}px`, }}>
-                    test1
-            </div>
-          </Draggable>
-          <Draggable bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} >
-            <div style={{ backgroundColor:'yellow',position:'absolute',zIndex:'3',width: `${widthCell}px`,
-              height: `${2*widthCell}px`, }}>
-                    test2
-            </div>
-          </Draggable>
-          <Draggable bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} >
-            <div style={{ backgroundColor:'pink',position:'absolute',zIndex:'3',width: `${widthCell}px`,
-              height: `${2*widthCell}px`, }}>
-                    test3
-            </div>
-          </Draggable> */}
           {dataBoard.map((cell) => (
-            <>
+
             
-              <div
-                key={cell.id}
-                style={{
-                  width: `${widthCell}px`,
-                  height: `${widthCell}px`,
-                  backgroundColor: 'skyblue',
-                  border: '1px solid #ffffff',
-                  display: 'grid',
-                  placeContent: 'center',
-                  position:'relative',
-                  zIndex: '1'
-                }}
-                onClick={() => onClickCell(cell.x, cell.y)}
-              >
-                <div style={{ width: '100%',height:'100%' }}>
-                  {cell.id}
-                </div>
-              </div> 
-            </>
-            
-            // </Draggable>
+            <div
+              key={cell.id}
+              style={{
+                width: `${widthCell}px`,
+                height: `${widthCell}px`,
+                backgroundColor: '#ffffff',
+                border: '1px solid #ffffff',
+                display: 'grid',
+                placeContent: 'center',
+                position:'relative',
+                zIndex: '1'
+              }}
+              onClick={() => onClickCell(cell.x, cell.y)}
+            >
+              <div style={{ width: '100%',height:'100%' }}>
+                {cell.id}
+              </div>
+            </div> 
+
           ))}
         </div>
       </div>
