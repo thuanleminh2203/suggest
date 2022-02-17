@@ -18,7 +18,8 @@ import iconPlusDisable from './images/plus-disable-icon.png'
 import ProgressBarComponent from './components/ProgressBarComponent'
 import ResultComponent from './components/ResultComponent'
 import Game from './components/Game'
-import GameBoat from './components/GameBoat'
+import GameBoat from './components/GameBattleShip'
+import GameBattleShip from './components/GameBattleShip'
 
 const styles = {
   fadeIn: {
@@ -111,7 +112,7 @@ function App() {
   }, [])
 
   return (
-    <GameBoat />
+    <GameBattleShip />
 
     // <div>
     //   {/* <Game /> */}
