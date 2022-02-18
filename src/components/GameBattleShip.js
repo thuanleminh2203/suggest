@@ -12,6 +12,7 @@ import battleShip5 from '../images/battleship-5.png'
 import sea from '../images/sea.png'
 import Draggable from 'react-draggable'
 import seaBackground from '../images/sea-background.png'
+import ShipComponent from './ShipComponent'
 
 const X = 'x'
 const O = 'o'
@@ -20,7 +21,7 @@ const _ = null
 const width = window.innerWidth
 const height = window.innerHeight
 const scale = width > height ? height : width
-const widthCell = (scale * 0.8) / 10
+const widthCell = Math.floor((scale * 0.8) / 10)
 const BATTLE_SHIPS = [battleShip1, battleShip2, battleShip3, battleShip4, battleShip5]
 const NUMBER_ROW_BOARD = 10
 const NUMBER_SHIP = 10
@@ -29,27 +30,30 @@ const SHIPS= [
   {
     id: 1,
     name:'ship1',
-    img: null,
+    img: battleShip1,
     distance: 5
   },{
     id: 2,
     name:'ship2',
-    img: null,
+    img: battleShip2,
     distance: 4
-  },{
+  }
+  ,
+  {
     id: 3,
     name:'ship3',
-    img: null,
+    img: battleShip3,
     distance: 3
-  },{
+  },
+  {
     id: 4,
     name:'ship4',
-    img: null,
+    img: battleShip4,
     distance: 2
   },{
     id: 5,
     name:'ship5',
-    img: null,
+    img: battleShip5,
     distance: 1
   }
 ]
@@ -81,8 +85,6 @@ const createBoardGame = () => {
   // console.log('data', data)
   return data
 }
-
-
 
 const onControlledDrag = (e, position) => {
   const { x, y } = position
@@ -165,31 +167,6 @@ const genarateCoordinateShip = (distance) =>{
   const slideY = curentPositionY ===0 || curentPositionY === NUMBER_ROW_BOARD -1 
 
   let coordinateForShip = []
-  // if(slideX){
-  //   if(curentPositionX === 0){
-  //     for(let i = 0; i< distance ; i++){
-  //       coordinateForShip.push(curentPositionX  + NUMBER_ROW_BOARD * i)
-  //     }
-  //   }
-  //   if(curentPositionX === NUMBER_ROW_BOARD - 1){
-  //     for(let i = 0; i< distance ; i++){
-  //       coordinateForShip.push(curentPositionX  - NUMBER_ROW_BOARD * i)
-  //     }
-  //   }
-  //   // return
-  // }
-  // if(slideY){
-  //   if(curentPositionY === 0){
-  //     for(let i = 0; i< distance ; i++){
-  //       coordinateForShip.push(curentPositionY  + i)
-  //     }
-  //   }
-  //   if(curentPositionY === NUMBER_ROW_BOARD - 1){
-  //     for(let i = 0; i< distance ; i++){
-  //       coordinateForShip.push(curentPositionY  - i)
-  //     }
-  //   }
-  // }
 
   const randomDirection = randomNumber(2) // x: 0, y: 1
 
@@ -244,12 +221,17 @@ const genarateCoordinateShip = (distance) =>{
 
 const randomNumber= (maxValue = 0) => Math.floor(Math.random()*maxValue)
 
+let preCoordinatesForShipUsed = []
+let newCoordinatesForShipUsed = []
+// let preCoordinates = {}
+let newCoordinates = {}
+// let idShip = 0
 function GameBattleShip() {
   const [dataBoard, setDataBoard] = useState([])
-  const [coordinatesShip, setCoordinatesShip] = useState()
+  const [coordinatesShip, setCoordinatesShip] = useState([])
   const [coordinatesUsed,setCoordinatesUsed] = useState([])
-  //   const coordinatesShip = randomCoordinatesShip(10)
-
+  const [currentShipDrag,setCurrentShipDrag] = useState(null)
+  const nodeRef = React.useRef(null)
   const onClickCell = (rowIndex, columnIndex) => {
     // const index = parseInt(rowIndex)*NUMBER_ROW_BOARD + parseInt(columnIndex)
     // const currentDataCell = dataBoard[index].value
@@ -263,79 +245,96 @@ function GameBattleShip() {
 
     //   setDataBoard(newData)
     // }
+    console.log('==clecickkk====')
   }
 
   useEffect(() => {
     setDataBoard(createBoardGame())
-    // setCoordinatesShip(randomCoordinatesShip(NUMBER_SHIP))
-    // for(let i =0; i<SHIPS.length;i++){
-    //   genarateShip(ship)
-    //   console.log('===thuannnnnnnnnn===')
-    // }
     setCoordinatesShip(genarateShip())
 
   }, [])
 
-  const onDrag = (e , data) => {
-    // console.log('Event Type', e.target.outerText)
-    console.log( data)
+  const onDrag = (e , data, coordinates = [] , scaleX = 1, preX, preY, id) => {
+    preCoordinatesForShipUsed.length = 0
+    newCoordinatesForShipUsed.length = 0
+    newCoordinates= {}
+    let { x,y } = data
+    x = x/widthCell
+    y = y/widthCell
+    newCoordinates = { x,y }
+
+    preCoordinatesForShipUsed = [...coordinates]
+
+    if (scaleX < 1 ){//tang y
+      for(let i = 0; i < coordinates.length; i++){
+        newCoordinatesForShipUsed = [...newCoordinatesForShipUsed,''+x + (y + i)]
+      }
+    }else if(scaleX > 1){
+      for(let i = 0; i < coordinates.length; i++){
+        newCoordinatesForShipUsed = [...newCoordinatesForShipUsed,''+(x + i) + y ]
+      }
+    }else{
+      newCoordinatesForShipUsed = [...newCoordinatesForShipUsed,''+x+y]
+    }
+    setCurrentShipDrag(id)
+
   }
 
-  const genarateShip = (ship = {}, test1 = []) =>{
+  const onStop = (e , data) => {
+
+    const coordinatesAfterRemoveCurrentShip = coordinatesUsed.filter((value) => !preCoordinatesForShipUsed.includes(value))
+
+    if(newCoordinatesForShipUsed.filter((value) => preCoordinatesForShipUsed.includes(value)).length === newCoordinatesForShipUsed.length){
+      return
+    }
+    if(newCoordinatesForShipUsed.filter((value) => coordinatesAfterRemoveCurrentShip.includes(value)).length > 0){
+      return
+    }
+
+    const index = coordinatesShip.findIndex((item) => item.id === currentShipDrag)
+    coordinatesShip[index].x = newCoordinates.x
+    coordinatesShip[index].y = newCoordinates.y
+    coordinatesShip[index].coordinates = [...newCoordinatesForShipUsed]
+
+    setCoordinatesShip(coordinatesShip)
+
+    setCoordinatesUsed([...coordinatesAfterRemoveCurrentShip, ...newCoordinatesForShipUsed])
+
+  }
+
+  const onStart = (e,data,id, coordinates) => {
+    // console.log('======')
+  }
+
+  const genarateShip = () =>{
     let coordinates = []
     let data = []
     for(let i =0; i < SHIPS.length; i++){
-      const { distance, id } = SHIPS[i]
+      const { distance, id, img } = SHIPS[i]
       const dataForShip = genarateCoordinateShip(distance)
 
       const { width, height, coordinateForShip } = dataForShip
 
       const set = new Set([...coordinates, ...coordinateForShip])
-      // const test2 = [...test, ...coordinateForShip]
-      // console.log('====set===',set)
-      // console.log('====test===',[...coordinates, ...coordinateForShip])
 
       if(set.size !== [...coordinates, ...coordinateForShip].length){
-        console.log('====de quy------')
         i--   
       }else{
         const coordinate = coordinateForShip[0].split('')
         const x = parseInt(coordinate[0])
         const y = parseInt(coordinate[1])
         coordinates = [...coordinates, ...coordinateForShip]
-        data = [...data, { id, width, height, x, y }]
+        data = [...data, { id, width, height, x, y, img,distance, coordinates:coordinateForShip }]
       }
-
+      setCoordinatesUsed(coordinates)
     }
+    return data
 
-    return(
-      <>
-      
-        {data.map((item) => 
-          (
-            <Draggable key={item.id} bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} defaultPosition={{ x: item.x* widthCell, y: item.y*widthCell }}>
-              <div style={{ backgroundColor:`${randomColor()}`,position:'absolute',zIndex:'3',width: `${item.width}px`,
-                height: `${item.height}px`, color:`${randomColor()}` }}>
-            test {item.id}
-              </div>
-            </Draggable>)
-        )
-        }
-          
-      </>
-    )
   }
 
-  const drawShip = (ship = {}) => {
-    const { x, y, id } = ship
-    return(
-      <Draggable key={id} bounds="parent" grid={[widthCell,widthCell]} onDrag={onDrag} defaultPosition={{ x: x* widthCell, y: y*widthCell }}>
-        <div style={{ backgroundColor:`${randomColor()}`,position:'absolute',zIndex:'3',width: `${width}px`,
-          height: `${height}px`, color:`${randomColor()}` }}>
-            test {id}
-        </div>
-      </Draggable>
-    )
+  const onRotate = () =>{
+    // e.stopPropagation()
+    console.log('===chippp')
   }
 
 
@@ -355,13 +354,38 @@ function GameBattleShip() {
         }}
         className="demo-test"
         >
-          {/* {SHIPS.map(ship => <Fragment key={ship}> */}
 
-          {coordinatesShip}
-          {/* </Fragment>)} */}
-          {dataBoard.map((cell) => (
+          {coordinatesShip.map((ship ) => 
+            <Draggable 
+              onStop={(e) => onStop(e)} 
+              onStart={(e,data) => onStart(e,data,ship.id, ship.coordinates)} 
+              onDrag={(e,data) =>onDrag(e,data,ship.coordinates, ship.width/ship.height,ship.x,ship.y,ship.id)}  
+              // ref={nodeRef} 
+              // onMouseDown={(e) => {e.stopPropagation()}}
 
-            
+              key={ship.id} 
+              bounds="parent" 
+              grid={[widthCell,widthCell]}  
+              position={{ x: ship.x* widthCell, y: ship.y*widthCell }}>
+              <div
+                style={{ 
+                  // backgroundColor:`${randomColor()}`,
+                  position:'absolute',
+                  zIndex:'3',
+                  width: `${ship.width}px`,
+                  height: `${ship.height}px`,
+                  cursor:'pointer',
+                  color:`${randomColor()}` }}
+                onClick={onRotate}
+                // onMouseDown={(e) => {e.stopPropagation()}}
+              >
+                <img src={ship.img} style={{ width: '100%', height: '100%' }} />
+              </div>
+            </Draggable>)
+          
+          
+          }
+          {dataBoard.map((cell,index) => (
             <div
               key={cell.id}
               style={{
@@ -380,6 +404,7 @@ function GameBattleShip() {
                 {cell.id}
               </div>
             </div> 
+          
 
           ))}
         </div>
