@@ -59,9 +59,9 @@ function App() {
     setOptions(options.filter((v, k) => index !== k))
   }
 
-  useEffect(() => {
-    console.log(options.filter((value) => value !== '').length < 2)
-  }, [options])
+  // useEffect(() => {
+  //   console.log(options.filter((value) => value !== '').length < 2)
+  // }, [options])
 
   useEffect(() => {
     if (count === 50) {
@@ -107,9 +107,9 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    console.log(window.innerHeight)
-  }, [])
+  // useEffect(() => {
+  //   console.log(window.innerHeight)
+  // }, [])
 
   return (
     <GameBattleShip />
