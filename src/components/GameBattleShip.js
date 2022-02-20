@@ -27,24 +27,24 @@ const NUMBER_ROW_BOARD = 10
 const NUMBER_SHIP = 10
 
 const SHIPS= [
-  {
-    id: 1,
-    name:'ship1',
-    img: battleShip1,
-    distance: 5
-  },{
-    id: 2,
-    name:'ship2',
-    img: battleShip2,
-    distance: 4
-  }
-  ,
-  {
-    id: 3,
-    name:'ship3',
-    img: battleShip3,
-    distance: 3
-  },
+  // {
+  //   id: 1,
+  //   name:'ship1',
+  //   img: battleShip1,
+  //   distance: 5
+  // },{
+  //   id: 2,
+  //   name:'ship2',
+  //   img: battleShip2,
+  //   distance: 4
+  // }
+  // ,
+  // {
+  //   id: 3,
+  //   name:'ship3',
+  //   img: battleShip3,
+  //   distance: 3
+  // },
   {
     id: 4,
     name:'ship4',
@@ -231,6 +231,8 @@ function GameBattleShip() {
   const [coordinatesShip, setCoordinatesShip] = useState([])
   const [coordinatesUsed,setCoordinatesUsed] = useState([])
   const [currentShipDrag,setCurrentShipDrag] = useState(null)
+  const [isDragging,setIsDragging] = useState(false)
+  // let isDragging = false
   const nodeRef = React.useRef(null)
   const onClickCell = (rowIndex, columnIndex) => {
     // const index = parseInt(rowIndex)*NUMBER_ROW_BOARD + parseInt(columnIndex)
@@ -255,6 +257,18 @@ function GameBattleShip() {
   }, [])
 
   const onDrag = (e , data, coordinates = [] , scaleX = 1, preX, preY, id) => {
+    console.log('===on drag====',e.type)
+    // if (e.type === 'mousemove' || e.type === 'touchmove') {
+    //   isDragging =true
+    // }
+
+    // if (e.type === 'mouseup' || e.type === 'touchend') {
+    //   setTimeout(() => {
+    //     isDragging=false
+    //   }, 100)
+    // }
+    e.stopPropagation()
+    setIsDragging(true)
     preCoordinatesForShipUsed.length = 0
     newCoordinatesForShipUsed.length = 0
     newCoordinates= {}
@@ -277,11 +291,26 @@ function GameBattleShip() {
       newCoordinatesForShipUsed = [...newCoordinatesForShipUsed,''+x+y]
     }
     setCurrentShipDrag(id)
+ 
 
   }
 
   const onStop = (e , data) => {
+    if(!isDragging)
+      return
+    // if (e.type === 'mousemove' || e.type === 'touchmove') {
+    //   isDragging = true
+    // }
 
+    // if (e.type === 'mouseup' || e.type === 'touchend') {
+    //   setTimeout(() => {
+    //     isDragging = false
+    //   }, 100)
+    // }
+    console.log('===on onStop====',e.type)
+
+    // console.log('====draggg==',isDragging)
+    e.stopPropagation()
     const coordinatesAfterRemoveCurrentShip = coordinatesUsed.filter((value) => !preCoordinatesForShipUsed.includes(value))
 
     if(newCoordinatesForShipUsed.filter((value) => preCoordinatesForShipUsed.includes(value)).length === newCoordinatesForShipUsed.length){
@@ -299,11 +328,12 @@ function GameBattleShip() {
     setCoordinatesShip(coordinatesShip)
 
     setCoordinatesUsed([...coordinatesAfterRemoveCurrentShip, ...newCoordinatesForShipUsed])
-
-  }
-
-  const onStart = (e,data,id, coordinates) => {
-    // console.log('======')
+    // setIsDragging(false)
+    // if (e.cancelable) {
+    //   e.preventDefault()
+    // }
+    // setTimeout(() => setDragging(false),100)
+    setTimeout(() => (setIsDragging(false)), 100)
   }
 
   const genarateShip = () =>{
@@ -332,11 +362,109 @@ function GameBattleShip() {
 
   }
 
-  const onRotate = () =>{
-    // e.stopPropagation()
-    console.log('===chippp')
-  }
+  const onRotate = (ship,centerPosistionCallBack = null) =>{
+    if(isDragging){
+      return
+    }
+    const { id, height, width, coordinates, distance, x: currentX, y: currentY } = ship
+    const scaleX = width/height
+    const indexCenterPosistion = coordinates.length % 2 === 0?   Math.floor(coordinates.length / 2) - 1 : Math.floor(coordinates.length / 2)
+    const centerPosistion = centerPosistionCallBack || coordinates[indexCenterPosistion]
 
+    const newHeight = width
+    const newWidth = height
+    let newCoordinatesCurrentShip = []
+    if(scaleX === 1){
+      return
+    }
+    if(scaleX < 1){//tang x
+      // const coordinatOverPositive  = currentX + distance % 2 === 0 ? distance/2  : Math.floor(distance/2) + 1 
+      if(!centerPosistionCallBack){
+
+        const coordinatOverPositive  = currentX + Math.floor(distance/2)
+        const coordinatOverNegative  = currentX - Math.floor(distance/2)
+        if(coordinatOverPositive > 9 || coordinatOverNegative < 0){
+          const centerX = parseInt(centerPosistion.split('')[0])
+          const centerY = parseInt(centerPosistion.split('')[1])
+    
+          const distanceOver = coordinatOverPositive - 9 > 0 ? coordinatOverPositive - 9 : coordinatOverNegative
+          if(distanceOver !==0 ){
+            return onRotate(ship, distanceOver > 0 ?  '' + (centerX - distanceOver) + centerY : '' + (centerX - distanceOver) + centerY)
+          }
+
+        }
+      }
+
+      for(let i =0; i <=indexCenterPosistion; i++ ){
+        const newPositionX = parseInt(centerPosistion) - i*10
+        newCoordinatesCurrentShip = [newPositionX < 10 ? '0' + newPositionX : newPositionX + '', ...newCoordinatesCurrentShip]
+      }
+      for(let i=1; i < (coordinates.length - indexCenterPosistion); i++){
+        const newPositionY = parseInt(centerPosistion) + i*10
+        newCoordinatesCurrentShip = [...newCoordinatesCurrentShip,newPositionY < 10 ? '0' + newPositionY : newPositionY + '']
+      }
+
+    }
+    if(scaleX > 1){//y
+      if(!centerPosistionCallBack){
+
+        const coordinatOverPositive  = currentY + Math.floor(distance/2)
+        const coordinatOverNegative  = currentY - Math.floor(distance/2)
+        if(coordinatOverPositive > 9 || coordinatOverNegative < 0){
+          const centerX = parseInt(centerPosistion.split('')[0])
+          const centerY = parseInt(centerPosistion.split('')[1])
+    
+          const distanceOver = coordinatOverPositive - 9 > 0 ? coordinatOverPositive - 9 : coordinatOverNegative
+          if(distanceOver !==0 ){
+            return onRotate(ship, distanceOver > 0 ?  '' + centerX + (centerY - distanceOver)  : '' + centerX + (centerY - distanceOver) )
+          }
+
+        }
+      }
+
+      for(let i =0; i <=indexCenterPosistion; i++ ){
+        const newPositionX = parseInt(centerPosistion) - i
+        newCoordinatesCurrentShip = [newPositionX <  10 ? '0' +newPositionX : newPositionX + '', ...newCoordinatesCurrentShip]
+      }
+      for(let i=1; i < (coordinates.length - indexCenterPosistion); i++){
+        const newPositionY = parseInt(centerPosistion) - i
+
+        newCoordinatesCurrentShip = [...newCoordinatesCurrentShip,newPositionY < 10 ? '0' + newPositionY : newPositionY +  '']
+
+      }
+    }
+
+    const coordinateAfterRemoveShip = coordinatesUsed.filter((value) => !coordinates.includes(value))
+    const test = coordinatesUsed.filter((value) => coordinates.includes(value))
+
+
+
+    const firstCoordinate = newCoordinatesCurrentShip[0]
+    const x = parseInt(firstCoordinate.split('')[0])
+    const y = parseInt(firstCoordinate.split('')[1])
+
+
+    setCoordinatesUsed([...coordinateAfterRemoveShip,...newCoordinatesCurrentShip ])
+
+    const index = coordinatesShip.findIndex((item) => item.id === id)
+
+    coordinatesShip[index].x = parseInt(x)
+    coordinatesShip[index].y = parseInt(y)
+    coordinatesShip[index].coordinates.length = 0
+    coordinatesShip[index].coordinates =  [...newCoordinatesCurrentShip]
+    coordinatesShip[index].width = newWidth
+    coordinatesShip[index].height = newHeight
+
+
+    setCoordinatesShip(coordinatesShip)
+
+  }
+  const dragHandlers = { onStop }
+
+  const onStart = () => {
+    // isDragging = true
+  }
+  console.log('====draggg==',coordinatesUsed)
 
   return (
     <>
@@ -357,29 +485,27 @@ function GameBattleShip() {
 
           {coordinatesShip.map((ship ) => 
             <Draggable 
+              {...dragHandlers}
+              onStart={onStart}
               onStop={(e) => onStop(e)} 
-              onStart={(e,data) => onStart(e,data,ship.id, ship.coordinates)} 
               onDrag={(e,data) =>onDrag(e,data,ship.coordinates, ship.width/ship.height,ship.x,ship.y,ship.id)}  
-              // ref={nodeRef} 
-              // onMouseDown={(e) => {e.stopPropagation()}}
-
+              cancelable={false}
               key={ship.id} 
               bounds="parent" 
               grid={[widthCell,widthCell]}  
               position={{ x: ship.x* widthCell, y: ship.y*widthCell }}>
               <div
                 style={{ 
-                  // backgroundColor:`${randomColor()}`,
+                  backgroundColor:`${randomColor()}`,
                   position:'absolute',
                   zIndex:'3',
                   width: `${ship.width}px`,
                   height: `${ship.height}px`,
                   cursor:'pointer',
                   color:`${randomColor()}` }}
-                onClick={onRotate}
-                // onMouseDown={(e) => {e.stopPropagation()}}
+                onClick={isDragging ? () => {} : ()=> onRotate(ship)}
               >
-                <img src={ship.img} style={{ width: '100%', height: '100%' }} />
+                <img draggable="false" src={ship.img} style={{ width: '100%', height: '100%' }} />
               </div>
             </Draggable>)
           
